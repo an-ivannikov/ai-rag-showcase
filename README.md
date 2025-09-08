@@ -1,2 +1,1 @@
-# ai-rag-showcase
-ai-rag-showcase
+# AI RAG Showcase
