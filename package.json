@@ -1,0 +1,58 @@
+{
+  "name": "@ai-rag-showcase/monorepo",
+  "version": "0.1.0",
+  "description": "AI RAG Showcase",
+  "keywords": [
+    "ai",
+    "artificial intelligence",
+    "rag",
+    "retrieval-augmented generation",
+    "showcase"
+  ],
+  "type": "module",
+  "private": true,
+  "publishConfig": {
+    "access": "restricted",
+    "provenance": true
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Aleksandr Ivannikov",
+    "email": "info@ivannikov.pro",
+    "url": "https://ivannikov.pro"
+  },
+  "homepage": "https://github.com/an-ivannikov/ai-rag-showcase#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/an-ivannikov/ai-rag-showcase.git"
+  },
+  "bugs": {
+    "url": "https://github.com/an-ivannikov/ai-rag-showcase/issues",
+    "email": "info@ivannikov.pro"
+  },
+  "workspaces": [
+    "./apps/*",
+    "./packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "clean": "pnpm -r clean",
+    "diagram:png": "dot -Tpng architecture.dot -o architecture.png",
+    "diagram:svg": "dot -Tsvg architecture.dot -o architecture.svg",
+    "dev:api": "pnpm --filter @ai-rag-showcase/api dev",
+    "dev:worker": "pnpm --filter @ai-rag-showcase/worker dev",
+    "dev:tg-bot": "pnpm --filter @ai-rag-showcase/tg-bot dev",
+    "dev": "concurrently -n api,worker,tg-bot -c green,cyan,yellow \"pnpm dev:api\" \"pnpm dev:worker\" \"pnpm dev:tg-bot\"",
+    "lint": "eslint .",
+    "start": "pnpm -r start"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.3",
+    "@types/node": "22.18.1",
+    "concurrently": "9.2.1",
+    "eslint": "9.35.0",
+    "nodemon": "3.1.10",
+    "tsx": "4.20.5",
+    "typescript": "5.9.2"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@ai-rag-showcase/api",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "dev": "nodemon --watch src --exec tsx ./src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "bullmq": "5.58.5",
+    "@ai-rag-showcase/core": "workspace:*",
+    "@ai-rag-showcase/embeddings": "workspace:*",
+    "@ai-rag-showcase/llm": "workspace:*",
+    "@ai-rag-showcase/utils": "workspace:*",
+    "@ai-rag-showcase/vectorstore": "workspace:*",
+    "express": "5.1.0",
+    "ioredis": "5.7.0",
+    "mongoose": "8.18.1",
+    "zod": "4.1.5"
+  },
+  "devDependencies": {
+    "typescript": "5.9.2"
+  }
+}

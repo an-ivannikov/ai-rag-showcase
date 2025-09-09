@@ -1,0 +1,94 @@
+// Graphviz DOT describing ai-rag-showcase architecture (extended)
+digraph RAGShowcase {
+  rankdir=LR;
+  fontname="Inter";
+  node [shape=box, style="rounded,filled", fillcolor="#cce5ff", fontname="Inter"];
+  edge [color="#333333", arrowsize=0.8];
+
+  //=== RUNTIME SERVICES ===
+  subgraph cluster_runtime {
+    label="Runtime Services";
+    color="#9ec5fe";
+    style="rounded";
+
+    API    [label="API\n(Express, RAG endpoints)"];
+    WORKER [label="Worker\n(Ingestion jobs\nParse/Chunk/Embed)"];
+    BOT    [label="Telegram Bot\n(telegraf.js)"];
+    WEB    [label="Web (optional)\nNext.js panel"];
+  }
+
+  //=== INFRA (STATE/QUEUES/VECTORS) ===
+  subgraph cluster_infra {
+    label="Infra";
+    color="#9ec5fe";
+    style="rounded";
+
+    QDRANT [label="Qdrant\n(Vector DB)"];
+    MONGO  [label="MongoDB\n(State/Jobs/History)"];
+    REDIS  [label="Redis\n(Queue + Cache)"];
+  }
+
+  //=== PROVIDERS (LLM/EMBEDDINGS) ===
+  subgraph cluster_providers {
+    label="Model Providers";
+    color="#9ec5fe";
+    style="rounded";
+
+    EMB   [label="Embeddings\n(OpenAI / bge)"];
+    LLM   [label="LLM\n(OpenAI / Ollama)"];
+  }
+
+  //=== DATASETS / FILES ===
+  subgraph cluster_data {
+    label="Datasets / Files";
+    color="#9ec5fe";
+    style="rounded";
+
+    DATA  [label="Datasets\n(local FS / S3)\n(e.g., mythlang, rust-docs)"];
+  }
+
+  //=== OPTIONAL ANALYTICS ===
+  subgraph cluster_obs {
+    label="Observability (optional)";
+    color="#9ec5fe";
+    style="rounded,dashed";
+
+    LOGS   [label="Logging\n(log4js)"];
+    METRICS[label="Metrics\n(Prom/Grafana)"];
+  }
+
+  //=== FLOWS ===
+  // User interactions
+  USER [shape=oval, fillcolor="#e2e3e5", label="User"];
+  USER -> BOT [label="messages"];
+  USER -> WEB [label="browser"];
+
+  // App flows
+  WEB -> API   [label="upload/query"];
+  BOT -> API   [label="ask"];
+
+  // Retrieval path
+  API -> EMB    [label="embed(query)"];
+  API -> QDRANT [label="vector search (kNN)"];
+  API -> REDIS  [label="cache get/set", style=dashed];
+  API -> MONGO  [label="read/write meta"];
+  API -> LLM    [label="generate(answer)"];
+
+  // Ingestion path
+  API -> REDIS   [label="enqueue ingestion"];
+  WORKER -> REDIS [label="dequeue jobs"];
+  WORKER -> DATA  [label="read files"];
+  WORKER -> EMB   [label="embed(chunks)"];
+  WORKER -> QDRANT[label="upsert vectors"];
+  WORKER -> MONGO [label="job status"];
+
+  // Observability taps (optional)
+  API -> LOGS    [style=dashed, label="logs"];
+  WORKER -> LOGS [style=dashed, label="logs"];
+  API -> METRICS [style=dashed, label="metrics"];
+  WORKER -> METRICS [style=dashed, label="metrics"];
+
+  {rank=same; BOT; WEB}
+  {rank=same; API; WORKER}
+  {rank=same; QDRANT; MONGO; REDIS; EMB; LLM}
+}

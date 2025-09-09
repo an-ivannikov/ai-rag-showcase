@@ -1,0 +1,72 @@
+services:
+  mongo:
+    profiles: ["infra"]
+    container_name: mongo
+    image: mongo:8
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./docker/volumes/mongo:/data/db
+
+  redis:
+    profiles: ["infra"]
+    container_name: redis
+    image: redis:8
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/volumes/redis:/data
+    command: ["redis-server","--save","\"\"","--appendonly","no"]
+
+  qdrant:
+    profiles: ["infra"]
+    container_name: qdrant
+    image: qdrant/qdrant:v1.15.4
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./docker/volumes/qdrant:/qdrant/storage
+
+  api:
+    profiles: ["app"]
+    container_name: api
+    build: ./apps/api
+    env_file:
+      - .env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/ai_rag_showcase
+      - REDIS_HOST=redis
+      - QDRANT_URL=http://qdrant:6333
+    depends_on:
+      - mongo
+      - qdrant
+      - redis
+
+  worker:
+    profiles: ["app"]
+    container_name: worker
+    build: ./apps/worker
+    env_file:
+      - .env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/ai_rag_showcase
+      - REDIS_HOST=redis
+      - QDRANT_URL=http://qdrant:6333
+    depends_on:
+      - mongo
+      - qdrant
+      - redis
+
+  tg_bot:
+    profiles: ["app"]
+    container_name: worktg_boter
+    build: ./apps/tg-bot
+    env_file:
+      - .env
+    depends_on:
+      - api
+
+networks:
+  default:
+    name: ai-rag-showcase
