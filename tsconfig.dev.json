@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@ai-rag-showcase/utils": [
+        "packages/utils/src/index.ts"
+      ],
+      "@ai-rag-showcase/core": [
+        "packages/core/src/index.ts"
+      ],
+      "@ai-rag-showcase/embeddings": [
+        "packages/embeddings/src/index.ts"
+      ],
+      "@ai-rag-showcase/vectorstore": [
+        "packages/vectorstore/src/index.ts"
+      ],
+      "@ai-rag-showcase/llm": [
+        "packages/llm/src/index.ts"
+      ]
+    }
+  }
+}

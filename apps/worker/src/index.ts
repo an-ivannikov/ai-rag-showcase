@@ -18,9 +18,14 @@ const worker = new Worker("ingest", async job => {
     const { dir, meta } = job.data as { dir: string, meta: Record<string, any> };
     log.info(`Ingesting directory: ${dir}`);
     await ingestDir(dir, meta);
-    return { ok: true };
+    return { ok: true, };
   }
 }, { connection, });
 
-worker.on("completed", job => log.info(`job ${job.id} completed`));
-worker.on("failed", (job, err) => log.error(`job ${job?.id} failed`, err));
+worker.on("completed", (job) => {
+  log.info(`job ${job.id} completed`);
+});
+
+worker.on("failed", (job, err) => {
+  log.error(`job ${job?.id} failed`, err);
+});

@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { embedTexts } from "@ai-rag-showcase/embeddings";
 import { upsertPoints, search } from "@ai-rag-showcase/vectorstore";
+import { randomUUID } from 'node:crypto';
 
 
 
@@ -24,7 +25,7 @@ export async function ingestDir(dir: string, meta: Record<string, any>) {
     const parts = chunk(raw);
     parts.forEach((t, i) => {
       texts.push({
-        id: `${e.name}:${i}`,
+        id: randomUUID(),
         text: t,
         payload: { ...meta, file: e.name, idx: i }
       });

@@ -1,0 +1,10 @@
+node_modules/
+pnpm-store/
+.vscode
+.git
+.gitignore
+.DS_Store
+.env
+**/dist
+**/.env
+**/*.log

@@ -1,4 +1,3 @@
-# apps/tg-bot/Dockerfile
 FROM node:22-alpine AS builder
 WORKDIR /app
 ENV CI=1
@@ -10,7 +9,6 @@ COPY apps ./apps
 
 RUN pnpm install --frozen-lockfile
 RUN pnpm -r build
-RUN pnpm prune --prod
 
 FROM node:22-alpine AS runner
 WORKDIR /app

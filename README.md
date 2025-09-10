@@ -69,14 +69,15 @@ pnpm install
 cp .env.example .env
 
 # Start vector DB + Redis + Mongo
-docker compose  --profile infra up -d
+docker compose --profile infra  --profile app build --no-cache
+docker compose --profile infra  --profile app up --force-recreate -d
 
 # Run backend + worker + bot
 pnpm dev
 
 curl -X POST http://localhost:3001/ingest \
   -H "Content-Type: application/json" \
-  -d '{"dir":"./datasets/mythlang","meta":{"source":"mythlang","lang":"en"}}'
+  -d '{"dir":"./datasets/mythlang","meta":{"source":"mythlang_docs","lang":"en"}}'
 ```
 
 ---
@@ -85,16 +86,25 @@ curl -X POST http://localhost:3001/ingest \
 ## Example Interaction
 
 **User:**  
+```text
 > How do I declare a function in MythLang?
+```
 
 **Bot:**  
-In MythLang, functions are declared with the `ritual` keyword.
-
-*Source:*
-```myth
-ritual summonPhoenix(times: Int) -> Creature {
-  // summoning code
+```text
+💡 Answer
+Functions are declared using the ritual keyword. For example:
+ritual functionName(parameters) {
+  // function code here
 }
+
+
+You can refer to the "MythLang Syntax" chapter for more details.
+
+📖 Sources
+#1 intro.md 0 (score 0.680)
+#2 syntax.md 0 (score 0.672)
+#3 examples.md 0 (score 0.611)
 ```
 
 ---
